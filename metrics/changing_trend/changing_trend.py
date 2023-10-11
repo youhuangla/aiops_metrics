@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 # NOTE: Update the path to point to your files location
 files_path = 'E:/github/aiops_metrics/metrics/transfer_time/after_transfer_time'
-output_path = 'E:/github/aiops_metrics/metrics/k-means_analysis/cluster'
+output_path = 'E:/github/aiops_metrics/metrics/changing_trend/trend'
 files = os.listdir(files_path)
 
 # Get the total number of files for progress indication
@@ -38,13 +38,14 @@ for i, file in enumerate(files):
     # Add cluster labels to the original data
     data['cluster'] = kmeans.labels_
     
-    # Visualize the clustering result
-    plt.scatter(data['hour'], data['value'], c=data['cluster'], cmap='viridis', alpha=0.5)
-    plt.xlabel('Hour of the Day')
+    # Plotting the value over time
+    plt.plot(data['timestamp'], data['value'])
+    plt.xlabel('Timestamp')
     plt.ylabel('Value')
-    plt.title(f'K-Means Clustering Result for {file}')
-    plt.colorbar(label='Cluster Label')
-    plt.savefig(os.path.join(output_path, f"cluster_plot_{file.replace('.xlsx', '.png')}"))
+    plt.title(f'Value over time for {file}')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_path, f"time_series_plot_{file.replace('.xlsx', '.png')}"))
     plt.close()
     
     # Save the data with cluster labels
