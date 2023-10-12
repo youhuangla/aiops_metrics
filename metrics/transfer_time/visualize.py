@@ -1,8 +1,6 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
 from pathlib import Path
 
 # 定义文件路径
@@ -34,6 +32,14 @@ for file in files:
     
     # 遍历指标列并为每个指标创建一个子图
     for idx, kpi in enumerate(kpi_columns):
+        # 检查无法转换的值
+        non_numeric = data[pd.to_numeric(data[kpi], errors='coerce').isna()][kpi].unique()
+        if len(non_numeric) > 0:
+            print(f"Warning: Non-numeric values found in {file}, column {kpi}: {non_numeric}")
+
+        # 将非数值数据转换为NaN
+        data[kpi] = pd.to_numeric(data[kpi], errors='coerce')
+
         axs[idx].plot(data['timestamp'], data[kpi])
         axs[idx].set_title(kpi)
         axs[idx].set_xlabel('Timestamp')
